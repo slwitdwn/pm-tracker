@@ -33,7 +33,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; min-height: 100vh; -webkit-font-smoothing: antialiased; }
 .shell { max-width: 1000px; margin: 0 auto; padding: 24px 16px 60px; }
- 
+
 .header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 28px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
 .header-left h1 { font-size: 17px; font-weight: 500; letter-spacing: -0.01em; color: var(--text); }
 .header-left p { font-family: var(--mono); font-size: 11px; color: var(--text3); margin-top: 4px; }
@@ -43,7 +43,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 .refresh-btn.loading { opacity: .4; pointer-events: none; }
 .dot-live { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.2} }
- 
+
 .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 20px; }
 .stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
 .s-label { font-family: var(--mono); font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
@@ -51,12 +51,12 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 .s-val.green { color: var(--green); }
 .s-val.amber { color: var(--amber); }
 .s-val.blue  { color: var(--blue); }
- 
+
 .filter-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
 .filter-bar label { font-family: var(--mono); font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
 .filter-bar input[type=range] { flex: 1; max-width: 140px; accent-color: var(--purple); }
 .filter-val { font-family: var(--mono); font-size: 11px; color: var(--text2); min-width: 36px; }
- 
+
 .wallets-row { display: flex; gap: 7px; margin-bottom: 20px; flex-wrap: wrap; }
 .wallet-pill { display: flex; align-items: center; gap: 7px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 5px 11px 5px 8px; cursor: pointer; transition: all .15s; user-select: none; }
 .wallet-pill:hover { border-color: var(--border2); }
@@ -68,13 +68,13 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 .wp-b { font-family: var(--mono); font-size: 10px; color: var(--green); }
 .wp-s { font-family: var(--mono); font-size: 10px; color: var(--red); }
 .wp-sep { font-family: var(--mono); font-size: 10px; color: var(--text3); }
- 
+
 .section-label { font-family: var(--mono); font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
- 
+
 .feed-header { display: grid; grid-template-columns: 80px minmax(0,1fr) 100px 80px 60px 70px; gap: 12px; padding: 6px 14px; font-family: var(--mono); font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
- 
+
 .feed { display: flex; flex-direction: column; gap: 2px; }
- 
+
 .feed-row { display: grid; grid-template-columns: 80px minmax(0,1fr) 100px 80px 60px 70px; gap: 12px; align-items: start; padding: 11px 14px; border: 1px solid transparent; border-radius: 6px; transition: filter .12s; animation: fadeIn .25s ease; }
 .feed-row.row-yes  { background: var(--green-row); border-color: var(--green-bdr); }
 .feed-row.row-no   { background: var(--red-row);   border-color: var(--red-bdr); }
@@ -82,7 +82,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 .feed-row.row-neutral { background: var(--surface); }
 .feed-row:hover { filter: brightness(1.15); }
 @keyframes fadeIn { from{opacity:0;transform:translateY(-3px)} to{opacity:1;transform:translateY(0)} }
- 
+
 .f-time { font-family: var(--mono); font-size: 11px; color: var(--text3); padding-top: 2px; white-space: nowrap; }
 .f-market { font-size: 13px; color: var(--text); line-height: 1.45; word-break: break-word; }
 .f-outcome-badge { display: inline-block; font-family: var(--mono); font-size: 10px; padding: 1px 6px; border-radius: 3px; margin-left: 6px; vertical-align: middle; background: var(--surface2); border: 1px solid var(--border2); color: var(--text2); }
@@ -97,11 +97,11 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 .size-num { font-family: var(--mono); font-size: 12px; color: var(--text); }
 .size-bar-bg { width: 54px; height: 2px; background: var(--border2); border-radius: 1px; }
 .size-bar-fill { height: 100%; border-radius: 1px; }
- 
+
 .feed-empty { text-align: center; padding: 52px 0; font-family: var(--mono); font-size: 12px; color: var(--text3); }
 .error-banner { background: #f8717112; border: 1px solid #f8717144; border-radius: 6px; padding: 10px 14px; font-family: var(--mono); font-size: 11px; color: var(--red); margin-bottom: 14px; display: none; }
 .error-banner.show { display: block; }
- 
+
 @media (max-width: 640px) {
   .stats-row { grid-template-columns: repeat(2,1fr); }
   .feed-header { display: none; }
@@ -117,7 +117,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 </head>
 <body>
 <div class="shell">
- 
+
   <div class="header">
     <div class="header-left">
       <h1>PM Signal Tracker</h1>
@@ -130,24 +130,24 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
       </button>
     </div>
   </div>
- 
+
   <div id="error-banner" class="error-banner"></div>
- 
+
   <div class="stats-row">
     <div class="stat-box"><div class="s-label">Trades today</div><div class="s-val" id="stat-total">—</div></div>
     <div class="stat-box"><div class="s-label">Above filter</div><div class="s-val green" id="stat-filtered">—</div></div>
     <div class="stat-box"><div class="s-label">Avg price</div><div class="s-val blue" id="stat-avg">—</div></div>
     <div class="stat-box"><div class="s-label">Volume</div><div class="s-val amber" id="stat-vol">—</div></div>
   </div>
- 
+
   <div class="filter-bar">
     <label>Min size</label>
     <input type="range" min="1" max="100" value="5" step="1" id="min-filter" oninput="updateFilter()">
     <span class="filter-val" id="filter-val">$5</span>
   </div>
- 
+
   <div class="wallets-row" id="wallets-row"></div>
- 
+
   <div class="section-label">Trade feed</div>
   <div class="feed-header">
     <span>Time</span>
@@ -160,7 +160,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
   <div class="feed" id="feed">
     <div class="feed-empty">Loading trades…</div>
   </div>
- 
+
 </div>
 <script>
 const WALLETS = [
@@ -169,11 +169,11 @@ const WALLETS = [
   { name: "BeefSlayer", address: "0x331bf91c132af9d921e1908ca0979363fc47193f", color: "#fbbf24" },
   { name: "mjf02",      address: "0x5ea284bb13db26c76529a944e6bf9497c8c5e97f", color: "#c4b5fd" },
 ];
- 
+
 let allTrades = [];
 let activeWallets = new Set(WALLETS.map(w => w.address));
 let minSize = 5;
- 
+
 function fmtTime(ts) {
   if (!ts) return '—';
   const diffM = Math.floor((Date.now() - ts * 1000) / 60000);
@@ -183,7 +183,7 @@ function fmtTime(ts) {
   if (h < 24) return h + 'h ago';
   return new Date(ts * 1000).toLocaleDateString();
 }
- 
+
 function getSide(t) {
   const s = (t.side || t.type || '').toLowerCase();
   const outcome = (t.outcome || '').toLowerCase();
@@ -193,7 +193,7 @@ function getSide(t) {
   if (s === 'buy' || s === 'long' || s === 'yes') return 'yes';
   return 'yes'; // fallback
 }
- 
+
 async function fetchWalletTrades(wallet) {
   const url = `https://data-api.polymarket.com/activity?user=${wallet.address}&limit=50`;
   try {
@@ -206,36 +206,36 @@ async function fetchWalletTrades(wallet) {
     return [];
   }
 }
- 
+
 function showError(msg) {
   const el = document.getElementById('error-banner');
   el.textContent = msg;
   el.classList.add('show');
   setTimeout(() => el.classList.remove('show'), 8000);
 }
- 
+
 async function fetchAll() {
   const btn = document.getElementById('refresh-btn');
   btn.classList.add('loading');
   document.getElementById('refresh-icon').textContent = '…';
- 
+
   const results = await Promise.all(WALLETS.map(fetchWalletTrades));
   allTrades = results.flat();
- 
+
   if (allTrades.length === 0) {
     showError('No data returned — check wallet addresses or Polymarket API may be down.');
   }
- 
+
   allTrades.sort((a,b) => (b.timestamp||b.createdAt||0) - (a.timestamp||a.createdAt||0));
   document.getElementById('last-updated').textContent = 'updated ' + new Date().toLocaleTimeString();
- 
+
   renderWalletPills();
   renderFeed();
- 
+
   btn.classList.remove('loading');
   document.getElementById('refresh-icon').textContent = '↻';
 }
- 
+
 function renderWalletPills() {
   const row = document.getElementById('wallets-row');
   row.innerHTML = '';
@@ -246,7 +246,7 @@ function renderWalletPills() {
     const buys  = trades.filter(t => getSide(t) === 'yes').length;
     const nos   = trades.filter(t => getSide(t) === 'no').length;
     const sells = trades.filter(t => getSide(t) === 'sell').length;
- 
+
     const pill = document.createElement('div');
     pill.className = 'wallet-pill' + (activeWallets.has(w.address) ? ' active' : '');
     pill.innerHTML = `
@@ -271,13 +271,13 @@ function renderWalletPills() {
     row.appendChild(pill);
   });
 }
- 
+
 function renderFeed() {
   const feed = document.getElementById('feed');
   const filtered = allTrades.filter(t =>
     activeWallets.has(t._wallet.address) && (t.usdcSize||t.size||0) >= minSize
   );
- 
+
   // Stats
   const today = new Date(); today.setHours(0,0,0,0);
   const todayAll = allTrades.filter(t => (t.timestamp||t.createdAt||0)*1000 >= today.getTime());
@@ -288,14 +288,14 @@ function renderFeed() {
     ? Math.round(prices.reduce((a,b)=>a+b,0)/prices.length*100)+'¢' : '—';
   const vol = filtered.reduce((a,t)=>a+(t.usdcSize||t.size||0),0);
   document.getElementById('stat-vol').textContent = vol ? '$'+Math.round(vol) : '—';
- 
+
   if (!filtered.length) {
     feed.innerHTML = '<div class="feed-empty">No trades above $'+minSize+' — adjust filter or refresh</div>';
     return;
   }
- 
+
   const maxSize = Math.max(...filtered.map(t => t.usdcSize||t.size||0));
- 
+
   feed.innerHTML = filtered.map(t => {
     const w = t._wallet;
     const size = t.usdcSize || t.size || 0;
@@ -309,7 +309,7 @@ function renderFeed() {
       ? `<span class="f-outcome-badge">${t.outcome}</span>` : '';
     const barPct = maxSize > 0 ? Math.round((size/maxSize)*100) : 0;
     const barColor = side === 'yes' ? '#34d399' : side === 'no' ? '#f87171' : '#fbbf24';
- 
+
     return `<div class="feed-row ${rowClass}">
       <span class="f-time">${fmtTime(ts)}</span>
       <div class="f-market">${title}${outcome}</div>
@@ -327,17 +327,16 @@ function renderFeed() {
     </div>`;
   }).join('');
 }
- 
+
 function updateFilter() {
   minSize = parseInt(document.getElementById('min-filter').value);
   document.getElementById('filter-val').textContent = '$' + minSize;
   renderWalletPills();
   renderFeed();
 }
- 
+
 setInterval(fetchAll, 90000);
 fetchAll();
 </script>
 </body>
 </html>
- 
