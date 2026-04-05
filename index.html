@@ -23,6 +23,8 @@
   --red-row:   #f8717112;
   --red-bdr:   #f8717145;
   --amber:     #fbbf24;
+  --amber-row: #fbbf2412;
+  --amber-bdr: #fbbf2445;
   --blue:      #93c5fd;
   --purple:    #c4b5fd;
   --mono: 'IBM Plex Mono', monospace;
@@ -74,8 +76,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 .feed { display: flex; flex-direction: column; gap: 2px; }
  
 .feed-row { display: grid; grid-template-columns: 80px minmax(0,1fr) 100px 80px 60px 70px; gap: 12px; align-items: start; padding: 11px 14px; border: 1px solid transparent; border-radius: 6px; transition: filter .12s; animation: fadeIn .25s ease; }
-.feed-row.row-buy  { background: var(--green-row); border-color: var(--green-bdr); }
-.feed-row.row-sell { background: var(--red-row);   border-color: var(--red-bdr); }
+.feed-row.row-yes  { background: var(--green-row); border-color: var(--green-bdr); }
+.feed-row.row-no   { background: var(--red-row);   border-color: var(--red-bdr); }
+.feed-row.row-sell { background: var(--amber-row); border-color: var(--amber-bdr); }
 .feed-row.row-neutral { background: var(--surface); }
 .feed-row:hover { filter: brightness(1.15); }
 @keyframes fadeIn { from{opacity:0;transform:translateY(-3px)} to{opacity:1;transform:translateY(0)} }
@@ -85,8 +88,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 .f-outcome-badge { display: inline-block; font-family: var(--mono); font-size: 10px; padding: 1px 6px; border-radius: 3px; margin-left: 6px; vertical-align: middle; background: var(--surface2); border: 1px solid var(--border2); color: var(--text2); }
 .f-wallet { font-family: var(--mono); font-size: 11px; padding-top: 2px; white-space: nowrap; }
 .f-side { font-family: var(--mono); font-size: 11px; font-weight: 500; padding-top: 2px; white-space: nowrap; }
-.f-side.buy  { color: var(--green); }
-.f-side.sell { color: var(--red); }
+.f-side.yes  { color: var(--green); }
+.f-side.no   { color: var(--red); }
+.f-side.sell { color: var(--amber); }
 .f-price { font-family: var(--mono); font-size: 12px; color: var(--text2); padding-top: 2px; }
 .f-size { text-align: right; padding-top: 2px; }
 .size-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
@@ -180,9 +184,14 @@ function fmtTime(ts) {
   return new Date(ts * 1000).toLocaleDateString();
 }
  
-function isBuySide(t) {
+function getSide(t) {
   const s = (t.side || t.type || '').toLowerCase();
-  return s === 'buy' || s === 'long' || s === 'yes';
+  const outcome = (t.outcome || '').toLowerCase();
+  if (s === 'sell') return 'sell';
+  if (outcome === 'no' || s === 'no') return 'no';
+  // buy yes is default for any buy
+  if (s === 'buy' || s === 'long' || s === 'yes') return 'yes';
+  return 'yes'; // fallback
 }
  
 async function fetchWalletTrades(wallet) {
@@ -234,8 +243,9 @@ function renderWalletPills() {
     const trades = allTrades.filter(t =>
       t._wallet.address === w.address && (t.usdcSize||t.size||0) >= minSize
     );
-    const buys  = trades.filter(t => isBuySide(t)).length;
-    const sells = trades.filter(t => !isBuySide(t)).length;
+    const buys  = trades.filter(t => getSide(t) === 'yes').length;
+    const nos   = trades.filter(t => getSide(t) === 'no').length;
+    const sells = trades.filter(t => getSide(t) === 'sell').length;
  
     const pill = document.createElement('div');
     pill.className = 'wallet-pill' + (activeWallets.has(w.address) ? ' active' : '');
@@ -243,13 +253,15 @@ function renderWalletPills() {
       <div class="wp-dot" style="background:${w.color}"></div>
       <span class="wp-name">${w.name}</span>
       <div class="wp-tally">
-        <span class="wp-b">+${buys}</span>
+        <span class="wp-b">+${buys}Y</span>
         <span class="wp-sep">/</span>
-        <span class="wp-s">-${sells}</span>
+        <span class="wp-s">${nos}N</span>
+        <span class="wp-sep">/</span>
+        <span style="font-family:var(--mono);font-size:10px;color:var(--amber)">S${sells}</span>
       </div>`;
     pill.onclick = () => {
       if (activeWallets.has(w.address)) {
-        if (activeWallets.size > 1) activeWallets.delete(w.address);
+        activeWallets.delete(w.address);
       } else {
         activeWallets.add(w.address);
       }
@@ -289,20 +301,20 @@ function renderFeed() {
     const size = t.usdcSize || t.size || 0;
     const price = t.price != null ? Math.round(t.price * 100) : null;
     const ts = t.timestamp || t.createdAt || 0;
-    const buy = isBuySide(t);
-    const rowClass = buy ? 'row-buy' : 'row-sell';
-    const sideLabel = buy ? '▲ BUY YES' : '▼ SELL';
+    const side = getSide(t);
+    const rowClass = side === 'yes' ? 'row-yes' : side === 'no' ? 'row-no' : 'row-sell';
+    const sideLabel = side === 'yes' ? '▲ BUY YES' : side === 'no' ? '▼ BUY NO' : '→ SELL';
     const title = t.title || t.market || t.conditionQuestion || 'Weather market';
     const outcome = t.outcome != null && String(t.outcome) !== '' && String(t.outcome) !== 'undefined'
       ? `<span class="f-outcome-badge">${t.outcome}</span>` : '';
     const barPct = maxSize > 0 ? Math.round((size/maxSize)*100) : 0;
-    const barColor = buy ? '#34d399' : '#f87171';
+    const barColor = side === 'yes' ? '#34d399' : side === 'no' ? '#f87171' : '#fbbf24';
  
     return `<div class="feed-row ${rowClass}">
       <span class="f-time">${fmtTime(ts)}</span>
       <div class="f-market">${title}${outcome}</div>
       <span class="f-wallet" style="color:${w.color}">${w.name}</span>
-      <span class="f-side ${buy?'buy':'sell'}">${sideLabel}</span>
+      <span class="f-side ${side}">${sideLabel}</span>
       <span class="f-price">${price !== null ? price+'¢' : '—'}</span>
       <div class="f-size">
         <div class="size-wrap">
