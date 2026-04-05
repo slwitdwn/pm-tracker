@@ -284,8 +284,9 @@ function renderFeed() {
   document.getElementById('stat-total').textContent = todayAll.length || '0';
   document.getElementById('stat-filtered').textContent = filtered.length || '0';
   const prices = filtered.map(t => t.price).filter(p => p != null);
-  document.getElementById('stat-avg').textContent = prices.length
-    ? Math.round(prices.reduce((a,b)=>a+b,0)/prices.length*100)+'¢' : '—';
+  const avgPrice = prices.length ? prices.reduce((a,b)=>a+b,0)/prices.length*100 : null;
+  document.getElementById('stat-avg').textContent = avgPrice !== null
+    ? (avgPrice < 10 ? avgPrice.toFixed(1) : Math.round(avgPrice))+'¢' : '—';
   const vol = filtered.reduce((a,t)=>a+(t.usdcSize||t.size||0),0);
   document.getElementById('stat-vol').textContent = vol ? '$'+Math.round(vol) : '—';
 
@@ -299,7 +300,8 @@ function renderFeed() {
   feed.innerHTML = filtered.map(t => {
     const w = t._wallet;
     const size = t.usdcSize || t.size || 0;
-    const price = t.price != null ? Math.round(t.price * 100) : null;
+    const rawPrice = t.price != null ? t.price * 100 : null;
+    const price = rawPrice !== null ? (rawPrice < 10 ? rawPrice.toFixed(1) : Math.round(rawPrice)) : null;
     const ts = t.timestamp || t.createdAt || 0;
     const side = getSide(t);
     const rowClass = side === 'yes' ? 'row-yes' : side === 'no' ? 'row-no' : 'row-sell';
