@@ -116,6 +116,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 
 .f-market-wrap { min-width: 0; }
 .f-market { font-size: 13px; color: var(--text); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.f-time-inline { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; }
 .f-new-badge { display: inline-block; font-family: var(--mono); font-size: 9px; padding: 1px 5px; border-radius: 3px; background: var(--green); color: #0a0a0a; margin-left: 5px; vertical-align: middle; animation: blink 1.5s ease 3; }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
 
@@ -242,9 +243,9 @@ function getSide(t) {
 
 function getTimeGroup(ts) {
   const diffM = Math.floor((Date.now() - ts * 1000) / 60000);
-  if (diffM < 15) return '🟢 Just now';
-  if (diffM < 60) return 'Last hour';
-  if (diffM < 360) return 'Last 6 hours';
+  if (diffM < 5)   return '⚡ Last 5 min';
+  if (diffM < 30)  return 'Last 30 min';
+  if (diffM < 120) return 'Last 2 hours';
   return 'Older';
 }
 
@@ -353,7 +354,7 @@ function renderChart() {
     const end   = now - i*3600000;
     const bucket = allTrades.filter(t => {
       const ms = (t.timestamp||0)*1000;
-      return ms >= start && ms < end && (t.usdcSize||t.size||0) >= minSize;
+      return ms >= start && ms < end;
     });
     const buys  = bucket.filter(t => getSide(t) !== 'sell').length;
     const sells = bucket.filter(t => getSide(t) === 'sell').length;
@@ -401,7 +402,7 @@ function renderFeed() {
 
   // Group by time
   const groups = {};
-  const groupOrder = ['🟢 Just now', 'Last hour', 'Last 6 hours', 'Older'];
+  const groupOrder = ['⚡ Last 5 min', 'Last 30 min', 'Last 2 hours', 'Older'];
   filtered.forEach(t => {
     const g = getTimeGroup(t.timestamp||0);
     if (!groups[g]) groups[g] = [];
@@ -445,12 +446,15 @@ function buildRow(t, maxSize) {
     : `<div class="market-icon-placeholder">📊</div>`;
   const title = t.title || 'Weather market';
   const txUrl = t.transactionHash ? `https://polygonscan.com/tx/${t.transactionHash}` : null;
+  const preciseTime = fmtTime(ts);
+  const clockTime = ts ? new Date(ts*1000).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
 
   return `<div class="feed-row ${rowClass}">
     <div class="row-main">
       ${iconHtml}
       <div class="f-market-wrap">
         <div class="f-market">${title}${newBadge}</div>
+        <div class="f-time-inline">${preciseTime} · ${clockTime}</div>
       </div>
       <span class="f-wallet" style="color:${w.color}">${w.name}</span>
       <span class="f-side ${side}">${sideLabel}</span>
@@ -465,7 +469,7 @@ function buildRow(t, maxSize) {
     </div>
     <div class="row-detail">
       <div class="detail-grid">
-        <div class="detail-item"><div class="d-label">Time</div><div class="d-val">${fmtTime(ts)} · ${new Date(ts*1000).toLocaleTimeString()}</div></div>
+        <div class="detail-item"><div class="d-label">Time</div><div class="d-val">${preciseTime} · ${clockTime}</div></div>
         <div class="detail-item"><div class="d-label">Size (shares)</div><div class="d-val">${Math.round(size / (t.price||1))} shares · $${size.toFixed(2)}</div></div>
         <div class="detail-item"><div class="d-label">Outcome</div><div class="d-val">${t.outcome || '—'}</div></div>
         <div class="detail-item"><div class="d-label">Price paid</div><div class="d-val">${fmtPrice(t.price)}</div></div>
