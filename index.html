@@ -309,12 +309,14 @@ function tradeId(t) {
 }
 
 async function fetchWalletTrades(wallet) {
-  const url = `https://data-api.polymarket.com/activity?user=${wallet.address}&limit=50`;
+  const url = `https://data-api.polymarket.com/activity?user=${wallet.address}&limit=100`;
   try {
     const res = await fetch(url);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
-    return (Array.isArray(data) ? data : []).map(t => ({ ...t, _wallet: wallet }));
+    return (Array.isArray(data) ? data : [])
+      .filter(t => t.type === 'BUY' || t.type === 'SELL')
+      .map(t => ({ ...t, _wallet: wallet }));
   } catch(e) {
     console.warn('Failed:', wallet.name, e.message);
     return [];
