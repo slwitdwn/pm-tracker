@@ -560,7 +560,7 @@ function openModal(t) {
       pnlRow = `
         <div class="modal-row" style="border-top:1px solid var(--border2);margin-top:6px;padding-top:12px">
           <span class="modal-key">Est. P&L</span>
-          <span class="modal-val ${cls}" style="font-size:15px;font-weight:700">${label} ${sign}$${Math.abs(pnl).toFixed(2)}</span>
+          <span class="modal-val" style="font-size:15px;font-weight:700;color:${pnl>=0?'#22c55e':'#ef4444'}">${label} ${sign}$${Math.abs(pnl).toFixed(2)}</span>
         </div>
         <div class="modal-row">
           <span class="modal-key">Avg Buy Price</span>
