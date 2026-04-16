@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PM Signal Tracker</title>
+<title>PM Signal Tracker v4</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap');
- 
+
   :root {
     --bg: #080f1e;
     --bg2: #0c1628;
@@ -24,9 +24,9 @@
     --purple: #a855f7;
     --teal: #14b8a6;
   }
- 
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
- 
+
   body {
     background: var(--bg);
     color: var(--text);
@@ -34,7 +34,7 @@
     font-size: 13px;
     min-height: 100vh;
   }
- 
+
   /* TOP BAR */
   .topbar {
     display: flex;
@@ -47,13 +47,13 @@
     top: 0;
     z-index: 100;
   }
- 
+
   .topbar-left { display: flex; flex-direction: column; gap: 2px; }
   .topbar-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
   .topbar-sub { font-size: 11px; color: var(--text3); }
- 
+
   .topbar-right { display: flex; align-items: center; gap: 12px; }
- 
+
   .status-dot {
     width: 7px; height: 7px; border-radius: 50%;
     background: var(--green);
@@ -61,9 +61,9 @@
     animation: pulse 2s infinite;
   }
   .status-dot.error { background: var(--red); box-shadow: 0 0 8px var(--red); animation: none; }
- 
+
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
- 
+
   .refresh-btn {
     background: var(--bg3);
     border: 1px solid var(--border2);
@@ -77,10 +77,10 @@
   }
   .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
   .refresh-btn:disabled { opacity: 0.4; cursor: not-allowed; }
- 
+
   /* MAIN */
   .main { padding: 20px 24px; max-width: 1300px; margin: 0 auto; }
- 
+
   /* ERROR BAR */
   .error-bar {
     background: rgba(239,68,68,0.08);
@@ -93,7 +93,7 @@
     display: none;
   }
   .error-bar.show { display: block; }
- 
+
   /* STAT CARDS */
   .stats-row {
     display: grid;
@@ -101,7 +101,7 @@
     gap: 12px;
     margin-bottom: 20px;
   }
- 
+
   .stat-card {
     background: var(--bg2);
     border: 1px solid var(--border);
@@ -112,10 +112,10 @@
   .stat-value { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700; color: #fff; }
   .stat-value.green { color: var(--green); }
   .stat-value.dim { color: var(--text2); font-size: 22px; }
- 
+
   /* CHART */
- 
- 
+
+
   /* CONTROLS */
   .controls-row {
     display: flex;
@@ -124,9 +124,9 @@
     margin-bottom: 16px;
     flex-wrap: wrap;
   }
- 
+
   .filter-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; }
- 
+
   .slider-wrap { display: flex; align-items: center; gap: 10px; }
   .slider-wrap input[type=range] {
     -webkit-appearance: none;
@@ -144,7 +144,7 @@
     border: 2px solid var(--bg);
   }
   .slider-val { color: var(--accent); font-size: 12px; min-width: 28px; }
- 
+
   .wallets-row { display: flex; gap: 8px; flex-wrap: wrap; }
   .wallet-pill {
     display: flex; align-items: center; gap: 6px;
@@ -161,7 +161,7 @@
   .wallet-pill .dot { width: 6px; height: 6px; border-radius: 50%; }
   .wallet-pill .wstats { font-size: 10px; color: var(--text3); margin-left: 2px; }
   .wallet-pill.active .wstats { color: inherit; opacity: 0.6; }
- 
+
   .region-btns { display: flex; gap: 6px; margin-left: auto; }
   .region-btn {
     padding: 5px 14px;
@@ -175,10 +175,10 @@
     transition: all 0.15s;
   }
   .region-btn.active, .region-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
- 
+
   /* FEED */
   .feed-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
- 
+
   .feed-empty {
     background: var(--bg2);
     border: 1px solid var(--border);
@@ -188,7 +188,7 @@
     color: var(--text3);
     font-size: 12px;
   }
- 
+
   .trade-row {
     background: var(--bg2);
     border: 1px solid var(--border);
@@ -203,7 +203,7 @@
     transition: border-color 0.15s, background 0.15s;
   }
   .trade-row:hover { border-color: var(--border2); background: var(--bg3); }
- 
+
   .trade-side {
     width: 36px; height: 22px; border-radius: 4px;
     display: flex; align-items: center; justify-content: center;
@@ -217,18 +217,16 @@
   .trade-side.redeem   { background: rgba(168,85,247,0.18); color: #a855f7; }
   .trade-side.merge    { background: rgba(20,184,166,0.18); color: #14b8a6; }
   .trade-side.other    { background: rgba(100,116,139,0.18);color: #94a3b8; }
- 
+
   .trade-time { font-size: 11px; color: var(--text3); }
   .trade-market { font-size: 12px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .trade-outcome { font-size: 11px; }
-  .trade-outcome.yes { color: var(--green); }
-  .trade-outcome.no { color: var(--red); }
+
   .trade-price { font-size: 13px; color: var(--text); text-align: right; }
   .trade-size { font-size: 12px; color: var(--yellow); text-align: right; }
   .trade-wallet { display: flex; align-items: center; gap: 5px; justify-content: flex-end; }
   .trade-wallet .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
   .trade-wallet .wname { font-size: 11px; color: var(--text2); }
- 
+
   /* SKELETON */
   .skel {
     background: linear-gradient(90deg, var(--bg3) 25%, var(--border) 50%, var(--bg3) 75%);
@@ -237,7 +235,7 @@
     border-radius: 4px;
   }
   @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
- 
+
   /* MODAL */
   .modal-overlay {
     position: fixed; inset: 0;
@@ -271,7 +269,7 @@
   .modal-val.yellow { color: var(--yellow); }
   .modal-link { display: block; margin-top: 16px; text-align: center; color: var(--accent); font-size: 12px; text-decoration: none; }
   .modal-link:hover { text-decoration: underline; }
- 
+
   @media (max-width: 768px) {
     .stats-row { grid-template-columns: repeat(2, 1fr); }
     .trade-row { grid-template-columns: 36px 1fr 60px 50px; }
@@ -283,7 +281,7 @@
 </style>
 </head>
 <body>
- 
+
 <div class="topbar">
   <div class="topbar-left">
     <div class="topbar-title">PM Signal Tracker</div>
@@ -295,10 +293,10 @@
     <button class="refresh-btn" id="refreshBtn" onclick="loadAll()">↻ refresh</button>
   </div>
 </div>
- 
+
 <div class="main">
   <div class="error-bar" id="errorBar"></div>
- 
+
   <div class="stats-row">
     <div class="stat-card">
       <div class="stat-label">Trades Today</div>
@@ -317,9 +315,9 @@
       <div class="stat-value dim" id="statVol">—</div>
     </div>
   </div>
- 
- 
- 
+
+
+
   <div class="controls-row">
     <span class="filter-label">Min Size</span>
     <div class="slider-wrap">
@@ -334,11 +332,11 @@
       <button class="region-btn" onclick="setRegion('ASIA',this)">ASIA</button>
     </div>
   </div>
- 
+
   <div class="feed-label">Trade Feed — Tap any row for details + link</div>
   <div id="feedWrap"></div>
 </div>
- 
+
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal" id="modalBox">
     <button class="modal-close" onclick="closeModal()">×</button>
@@ -347,7 +345,7 @@
     <a id="modalLink" class="modal-link" href="#" target="_blank">View on Polymarket ↗</a>
   </div>
 </div>
- 
+
 <script>
 const WALLETS = [
   { name: "Maskache2",  address: "0x1f66796B45581868376365AeF54b51Eb84184C8D", color: "#22c55e" },
@@ -356,14 +354,14 @@ const WALLETS = [
   { name: "mjf02",      address: "0x5eA284bB13db26c76529a944E6Bf9497c8c5e97F", color: "#c084fc" },
   { name: "0xhana",     address: "0xa37d1d1a3367c6ebc692e37c29bccb8bb015b2b4", color: "#14b8a6" },
 ];
- 
+
 // State
 let allTrades = [];
 let walletStats = {};
 let activeWallets = new Set(WALLETS.map(w => w.name));
 let minSize = 5;
 let activeRegion = 'ALL';
- 
+
 // CORS proxy — tries direct first, falls back to proxy
 async function fetchActivity(address) {
   const url = `https://data-api.polymarket.com/activity?user=${address}&limit=200`;
@@ -380,24 +378,24 @@ async function fetchActivity(address) {
   } catch(e) {}
   return [];
 }
- 
+
 function todayStart() {
   const d = new Date();
   d.setHours(0,0,0,0);
   return Math.floor(d.getTime() / 1000);
 }
- 
+
 function fmt(ts) {
   const d = new Date(ts * 1000);
   return d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
 }
- 
+
 function fmtDate(ts) {
   return new Date(ts * 1000).toLocaleString('en-GB', {
     day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'
   });
 }
- 
+
 function buildWalletPills() {
   const row = document.getElementById('walletsRow');
   row.innerHTML = '';
@@ -416,7 +414,7 @@ function buildWalletPills() {
     row.appendChild(pill);
   });
 }
- 
+
 function toggleWallet(name, el, color) {
   if (activeWallets.has(name)) {
     activeWallets.delete(name);
@@ -429,20 +427,20 @@ function toggleWallet(name, el, color) {
   }
   renderFeed();
 }
- 
+
 function setRegion(r, btn) {
   activeRegion = r;
   document.querySelectorAll('.region-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderFeed();
 }
- 
+
 function onSlider() {
   minSize = parseInt(document.getElementById('minSlider').value);
   document.getElementById('sliderVal').textContent = '$' + minSize;
   renderFeed();
 }
- 
+
 function regionOf(title) {
   if (!title) return 'OTHER';
   const t = title.toLowerCase();
@@ -454,7 +452,7 @@ function regionOf(title) {
   if (as.some(c => t.includes(c))) return 'ASIA';
   return 'OTHER';
 }
- 
+
 function renderFeed() {
   const today = todayStart();
   const visible = allTrades.filter(t => {
@@ -463,18 +461,18 @@ function renderFeed() {
     if (activeRegion !== 'ALL' && regionOf(t.title) !== activeRegion) return false;
     return true;
   });
- 
+
   // Stats
   const todayTrades = allTrades.filter(t => t.timestamp >= today && activeWallets.has(t._wallet));
   const todayAbove = todayTrades.filter(t => t.usdcSize >= minSize);
   const avgPrice = todayAbove.length ? (todayAbove.reduce((s,t) => s+t.price, 0)/todayAbove.length) : null;
   const vol = todayAbove.reduce((s,t) => s+t.usdcSize, 0);
- 
+
   document.getElementById('statToday').textContent = todayTrades.length || '0';
   document.getElementById('statAbove').textContent = todayAbove.length || '0';
   document.getElementById('statAvg').textContent = avgPrice ? avgPrice.toFixed(2) : '—';
   document.getElementById('statVol').textContent = vol ? '$'+Math.round(vol) : '—';
- 
+
   const wrap = document.getElementById('feedWrap');
   if (!visible.length) {
     wrap.innerHTML = `<div class="feed-empty">No trades above $${minSize} — adjust filter or refresh</div>`;
@@ -515,9 +513,9 @@ function renderFeed() {
     wrap.appendChild(row);
   });
 }
- 
- 
- 
+
+
+
 function calcPnl(t) {
   if (!t.asset || !t._wallet) return null;
   const buys = allTrades.filter(b =>
@@ -540,17 +538,17 @@ function calcPnl(t) {
   const pnl = (receivedPerShare - avgBuy) * shares;
   return { pnl, avgBuy, receivedPerShare };
 }
- 
+
 function openModal(t) {
   document.getElementById('modalTitle').textContent = t.title || '—';
- 
+
   const isSell   = t.side === 'SELL';
   const isRedeem = t.type === 'REDEEM';
   const side     = t.side || '—';
   const outcome  = t.outcome || '—';
   const sideColor    = side==='BUY'?'green':side==='SELL'?'red':'';
   const outcomeColor = outcome==='Yes'?'green':outcome==='No'?'red':'';
- 
+
   let pnlRow = '';
   if (isSell || isRedeem) {
     const result = calcPnl(t);
@@ -576,7 +574,7 @@ function openModal(t) {
       pnlRow = `<div class="modal-row"><span class="modal-key">Est. P&L</span><span class="modal-val" style="color:var(--text3)">No matching buys in feed</span></div>`;
     }
   }
- 
+
   document.getElementById('modalBody').innerHTML = `
     <div class="modal-row"><span class="modal-key">Wallet</span><span class="modal-val">${t._wallet}</span></div>
     <div class="modal-row"><span class="modal-key">Type</span><span class="modal-val" style="color:var(--accent)">${t.type||'—'}</span></div>
@@ -592,30 +590,30 @@ function openModal(t) {
   link.href = t.slug ? `https://polymarket.com/event/${t.slug}` : '#';
   document.getElementById('modalOverlay').classList.add('open');
 }
- 
+
 function closeModal(e) {
   if (!e || e.target === document.getElementById('modalOverlay') || e.currentTarget?.classList?.contains('modal-close')) {
     document.getElementById('modalOverlay').classList.remove('open');
   }
 }
- 
+
 async function loadAll() {
   const btn = document.getElementById('refreshBtn');
   const dot = document.getElementById('statusDot');
   const statusTxt = document.getElementById('statusText');
   const errBar = document.getElementById('errorBar');
- 
+
   btn.disabled = true;
   btn.textContent = '…';
   dot.className = 'status-dot';
   statusTxt.textContent = 'loading';
   errBar.classList.remove('show');
- 
+
   allTrades = [];
   walletStats = {};
   let anyData = false;
   let errors = [];
- 
+
   await Promise.all(WALLETS.map(async w => {
     try {
       const data = await fetchActivity(w.address);
@@ -635,10 +633,10 @@ async function loadAll() {
       errors.push(w.name + ': ' + e.message);
     }
   }));
- 
+
   // Sort by time desc
   allTrades.sort((a,b) => b.timestamp - a.timestamp);
- 
+
   if (!anyData) {
     errBar.textContent = 'No data returned — API may be temporarily down. Retrying next refresh.';
     errBar.classList.add('show');
@@ -653,22 +651,21 @@ async function loadAll() {
     dot.className = 'status-dot';
     statusTxt.textContent = 'live';
   }
- 
+
   const now = new Date();
   document.getElementById('lastUpdate').textContent =
     now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
- 
+
   buildWalletPills();
   renderFeed();
- 
+
   btn.disabled = false;
   btn.textContent = '↻ refresh';
 }
- 
+
 // Auto-refresh every 90s
 setInterval(loadAll, 90000);
 loadAll();
 </script>
 </body>
 </html>
- 
