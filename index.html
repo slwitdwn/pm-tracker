@@ -1,94 +1,3 @@
-
-Weather Assistant
-/
-1776323252233_image.png
-signal tracker we worked on not working 
-
-10:08
-
-Diagnosed likely CORS and API issues, considered multiple solutions
-Diagnosed likely CORS and API issues, considered multiple solutions
-The API endpoint itself looks fine from the docs. The issue is most likely one of two things: CORS policy change (Polymarket started blocking browser requests from GitHub Pages), or a syntax error from adding the 0xhana wallet manually.
-
-Quickest way to diagnose — open the tracker in your browser and press F12 → Console tab. What error do you see there? Should be red text. Tell me exactly what it says.
-
-Also — who is 0xhana? That's a wallet I don't have in memory. Did you add that to the index.html manually on GitHub? If yes, that might be where the break is.
-
-While you check the console, paste your current index.html here (or the WALLETS array section at the top) and I'll find the bug immediately.
-
-fix where ? i ciopy paste straight from git hub why not replace and fix the whole code and give it to me ???
-
-10:09
-
-Architected complete tracker rebuild with CORS proxy fix
-Architected complete tracker rebuild with CORS proxy fix
-Fair point. Give me the 0xhana wallet address — I have all the other 4 from memory. Once you send that I'll build the full fixed file right now.
-
-0xa37d1d1a3367c6ebc692e37c29bccb8bb015b2b4
-
-0xhana
-
-10:11
-
-Architected comprehensive tracker integrating multiple wallets with proxy solution
-Architected comprehensive tracker integrating multiple wallets with proxy solution
-All 5 wallets in, full rebuild. The key fix is a CORS proxy fallback — it tries the Polymarket API directly first, and if the browser blocks it, automatically retries through a proxy. That's almost certainly what broke it.
-
-To deploy: GitHub → pm-tracker → click index.html → pencil icon → select all → paste → Commit changes. Live in 30 seconds.
-
-What changed vs before:
-
-0xhana added (teal dot)
-CORS proxy fallback so it won't silently die again
-Better error message telling you exactly which wallet failed and why
-Auto-refresh every 90 seconds
-
-Index
-Code · HTML 
-colour seems differet it used to be blue ish ?
-
-10:13
-
-Recalibrated color palette toward bluer tones
-Recalibrated color palette toward bluer tones
-Done — shifted to a blue-tinted dark theme. Borders and panel backgrounds all have a blue cast now. Same deploy process: paste into GitHub and commit.
-
-
-Index
-Code · HTML 
-buy yess buy no but no sell ? there is literally no sales ?
-
-10:16
-
-Reconsidering API filters to surface missing sell transactions
-Reconsidering API filters to surface missing sell transactions
-Two fixes:
-
-Removed type=TRADE filter — that was blocking SELL transactions from coming through. Now fetches all activity types.
-Badge now shows full action — B Y (buy yes), B N (buy no), S Y (sell yes), S N (sell no) so you can see exactly what each trade is at a glance.
-
-Index
-Code · HTML 
-also there is a Activity in last 12 h , havent seen it work once ? just removed it yu can
-
-10:19
-
-Decided to eliminate the nonfunctional activity chart section
-Decided to eliminate the nonfunctional activity chart section
-Gone — chart removed from HTML, CSS, and JS completely. Cleaner layout now, feed starts right after the stat cards.
-
-
-Index
-Code · HTML 
-
-
-
-
-
-Claude is AI and can make mistakes. Please double-check responses.
-Index · HTML
-Copy
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -97,16 +6,16 @@ Copy
 <title>PM Signal Tracker</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap');
- 
+
   :root {
-    --bg: #0d1117;
-    --bg2: #111827;
-    --bg3: #1a2235;
-    --border: #1e3a5f;
-    --border2: #1d4175;
+    --bg: #080f1e;
+    --bg2: #0c1628;
+    --bg3: #112038;
+    --border: #1a3358;
+    --border2: #1e4070;
     --text: #b8cff0;
     --text2: #5b7fa8;
-    --text3: #334d70;
+    --text3: #2e4d70;
     --accent: #3b82f6;
     --accent2: #6366f1;
     --green: #22c55e;
@@ -115,9 +24,9 @@ Copy
     --purple: #a855f7;
     --teal: #14b8a6;
   }
- 
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
- 
+
   body {
     background: var(--bg);
     color: var(--text);
@@ -125,7 +34,7 @@ Copy
     font-size: 13px;
     min-height: 100vh;
   }
- 
+
   /* TOP BAR */
   .topbar {
     display: flex;
@@ -138,13 +47,13 @@ Copy
     top: 0;
     z-index: 100;
   }
- 
+
   .topbar-left { display: flex; flex-direction: column; gap: 2px; }
   .topbar-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
   .topbar-sub { font-size: 11px; color: var(--text3); }
- 
+
   .topbar-right { display: flex; align-items: center; gap: 12px; }
- 
+
   .status-dot {
     width: 7px; height: 7px; border-radius: 50%;
     background: var(--green);
@@ -152,9 +61,9 @@ Copy
     animation: pulse 2s infinite;
   }
   .status-dot.error { background: var(--red); box-shadow: 0 0 8px var(--red); animation: none; }
- 
+
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
- 
+
   .refresh-btn {
     background: var(--bg3);
     border: 1px solid var(--border2);
@@ -168,10 +77,10 @@ Copy
   }
   .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
   .refresh-btn:disabled { opacity: 0.4; cursor: not-allowed; }
- 
+
   /* MAIN */
   .main { padding: 20px 24px; max-width: 1300px; margin: 0 auto; }
- 
+
   /* ERROR BAR */
   .error-bar {
     background: rgba(239,68,68,0.08);
@@ -184,7 +93,7 @@ Copy
     display: none;
   }
   .error-bar.show { display: block; }
- 
+
   /* STAT CARDS */
   .stats-row {
     display: grid;
@@ -192,7 +101,7 @@ Copy
     gap: 12px;
     margin-bottom: 20px;
   }
- 
+
   .stat-card {
     background: var(--bg2);
     border: 1px solid var(--border);
@@ -203,10 +112,10 @@ Copy
   .stat-value { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700; color: #fff; }
   .stat-value.green { color: var(--green); }
   .stat-value.dim { color: var(--text2); font-size: 22px; }
- 
+
   /* CHART */
- 
- 
+
+
   /* CONTROLS */
   .controls-row {
     display: flex;
@@ -215,9 +124,9 @@ Copy
     margin-bottom: 16px;
     flex-wrap: wrap;
   }
- 
+
   .filter-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; }
- 
+
   .slider-wrap { display: flex; align-items: center; gap: 10px; }
   .slider-wrap input[type=range] {
     -webkit-appearance: none;
@@ -235,7 +144,7 @@ Copy
     border: 2px solid var(--bg);
   }
   .slider-val { color: var(--accent); font-size: 12px; min-width: 28px; }
- 
+
   .wallets-row { display: flex; gap: 8px; flex-wrap: wrap; }
   .wallet-pill {
     display: flex; align-items: center; gap: 6px;
@@ -252,7 +161,7 @@ Copy
   .wallet-pill .dot { width: 6px; height: 6px; border-radius: 50%; }
   .wallet-pill .wstats { font-size: 10px; color: var(--text3); margin-left: 2px; }
   .wallet-pill.active .wstats { color: inherit; opacity: 0.6; }
- 
+
   .region-btns { display: flex; gap: 6px; margin-left: auto; }
   .region-btn {
     padding: 5px 14px;
@@ -266,10 +175,10 @@ Copy
     transition: all 0.15s;
   }
   .region-btn.active, .region-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
- 
+
   /* FEED */
   .feed-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
- 
+
   .feed-empty {
     background: var(--bg2);
     border: 1px solid var(--border);
@@ -279,7 +188,7 @@ Copy
     color: var(--text3);
     font-size: 12px;
   }
- 
+
   .trade-row {
     background: var(--bg2);
     border: 1px solid var(--border);
@@ -294,16 +203,18 @@ Copy
     transition: border-color 0.15s, background 0.15s;
   }
   .trade-row:hover { border-color: var(--border2); background: var(--bg3); }
- 
+
   .trade-side {
     width: 32px; height: 22px; border-radius: 4px;
     display: flex; align-items: center; justify-content: center;
     font-size: 9px; font-weight: 700; letter-spacing: 0.02em;
     white-space: nowrap;
   }
-  .trade-side.buy { background: rgba(34,197,94,0.15); color: var(--green); }
-  .trade-side.sell { background: rgba(239,68,68,0.15); color: var(--red); }
- 
+  .trade-side.buy-yes  { background: rgba(34,197,94,0.18);  color: #22c55e; }
+  .trade-side.buy-no   { background: rgba(239,68,68,0.18);  color: #ef4444; }
+  .trade-side.sell-yes { background: rgba(251,146,60,0.18); color: #fb923c; }
+  .trade-side.sell-no  { background: rgba(251,146,60,0.18); color: #fb923c; }
+
   .trade-time { font-size: 11px; color: var(--text3); }
   .trade-market { font-size: 12px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .trade-outcome { font-size: 11px; }
@@ -314,7 +225,7 @@ Copy
   .trade-wallet { display: flex; align-items: center; gap: 5px; justify-content: flex-end; }
   .trade-wallet .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
   .trade-wallet .wname { font-size: 11px; color: var(--text2); }
- 
+
   /* SKELETON */
   .skel {
     background: linear-gradient(90deg, var(--bg3) 25%, var(--border) 50%, var(--bg3) 75%);
@@ -323,7 +234,7 @@ Copy
     border-radius: 4px;
   }
   @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
- 
+
   /* MODAL */
   .modal-overlay {
     position: fixed; inset: 0;
@@ -357,7 +268,7 @@ Copy
   .modal-val.yellow { color: var(--yellow); }
   .modal-link { display: block; margin-top: 16px; text-align: center; color: var(--accent); font-size: 12px; text-decoration: none; }
   .modal-link:hover { text-decoration: underline; }
- 
+
   @media (max-width: 768px) {
     .stats-row { grid-template-columns: repeat(2, 1fr); }
     .trade-row { grid-template-columns: 22px 1fr 60px 50px; }
@@ -369,7 +280,7 @@ Copy
 </style>
 </head>
 <body>
- 
+
 <div class="topbar">
   <div class="topbar-left">
     <div class="topbar-title">PM Signal Tracker</div>
@@ -381,10 +292,10 @@ Copy
     <button class="refresh-btn" id="refreshBtn" onclick="loadAll()">↻ refresh</button>
   </div>
 </div>
- 
+
 <div class="main">
   <div class="error-bar" id="errorBar"></div>
- 
+
   <div class="stats-row">
     <div class="stat-card">
       <div class="stat-label">Trades Today</div>
@@ -403,9 +314,9 @@ Copy
       <div class="stat-value dim" id="statVol">—</div>
     </div>
   </div>
- 
- 
- 
+
+
+
   <div class="controls-row">
     <span class="filter-label">Min Size</span>
     <div class="slider-wrap">
@@ -420,11 +331,11 @@ Copy
       <button class="region-btn" onclick="setRegion('ASIA',this)">ASIA</button>
     </div>
   </div>
- 
+
   <div class="feed-label">Trade Feed — Tap any row for details + link</div>
   <div id="feedWrap"></div>
 </div>
- 
+
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal" id="modalBox">
     <button class="modal-close" onclick="closeModal()">×</button>
@@ -433,7 +344,7 @@ Copy
     <a id="modalLink" class="modal-link" href="#" target="_blank">View on Polymarket ↗</a>
   </div>
 </div>
- 
+
 <script>
 const WALLETS = [
   { name: "Maskache2",  address: "0x1f66796B45581868376365AeF54b51Eb84184C8D", color: "#22c55e" },
@@ -442,14 +353,14 @@ const WALLETS = [
   { name: "mjf02",      address: "0x5eA284bB13db26c76529a944E6Bf9497c8c5e97F", color: "#c084fc" },
   { name: "0xhana",     address: "0xa37d1d1a3367c6ebc692e37c29bccb8bb015b2b4", color: "#14b8a6" },
 ];
- 
+
 // State
 let allTrades = [];
 let walletStats = {};
 let activeWallets = new Set(WALLETS.map(w => w.name));
 let minSize = 5;
 let activeRegion = 'ALL';
- 
+
 // CORS proxy — tries direct first, falls back to proxy
 async function fetchActivity(address) {
   const url = `https://data-api.polymarket.com/activity?user=${address}&limit=200`;
@@ -466,24 +377,24 @@ async function fetchActivity(address) {
   } catch(e) {}
   return [];
 }
- 
+
 function todayStart() {
   const d = new Date();
   d.setHours(0,0,0,0);
   return Math.floor(d.getTime() / 1000);
 }
- 
+
 function fmt(ts) {
   const d = new Date(ts * 1000);
   return d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
 }
- 
+
 function fmtDate(ts) {
   return new Date(ts * 1000).toLocaleString('en-GB', {
     day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'
   });
 }
- 
+
 function buildWalletPills() {
   const row = document.getElementById('walletsRow');
   row.innerHTML = '';
@@ -502,7 +413,7 @@ function buildWalletPills() {
     row.appendChild(pill);
   });
 }
- 
+
 function toggleWallet(name, el, color) {
   if (activeWallets.has(name)) {
     activeWallets.delete(name);
@@ -515,20 +426,20 @@ function toggleWallet(name, el, color) {
   }
   renderFeed();
 }
- 
+
 function setRegion(r, btn) {
   activeRegion = r;
   document.querySelectorAll('.region-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderFeed();
 }
- 
+
 function onSlider() {
   minSize = parseInt(document.getElementById('minSlider').value);
   document.getElementById('sliderVal').textContent = '$' + minSize;
   renderFeed();
 }
- 
+
 function regionOf(title) {
   if (!title) return 'OTHER';
   const t = title.toLowerCase();
@@ -540,7 +451,7 @@ function regionOf(title) {
   if (as.some(c => t.includes(c))) return 'ASIA';
   return 'OTHER';
 }
- 
+
 function renderFeed() {
   const today = todayStart();
   const visible = allTrades.filter(t => {
@@ -549,18 +460,18 @@ function renderFeed() {
     if (activeRegion !== 'ALL' && regionOf(t.title) !== activeRegion) return false;
     return true;
   });
- 
+
   // Stats
   const todayTrades = allTrades.filter(t => t.timestamp >= today && activeWallets.has(t._wallet));
   const todayAbove = todayTrades.filter(t => t.usdcSize >= minSize);
   const avgPrice = todayAbove.length ? (todayAbove.reduce((s,t) => s+t.price, 0)/todayAbove.length) : null;
   const vol = todayAbove.reduce((s,t) => s+t.usdcSize, 0);
- 
+
   document.getElementById('statToday').textContent = todayTrades.length || '0';
   document.getElementById('statAbove').textContent = todayAbove.length || '0';
   document.getElementById('statAvg').textContent = avgPrice ? avgPrice.toFixed(2) : '—';
   document.getElementById('statVol').textContent = vol ? '$'+Math.round(vol) : '—';
- 
+
   const wrap = document.getElementById('feedWrap');
   if (!visible.length) {
     wrap.innerHTML = `<div class="feed-empty">No trades above $${minSize} — adjust filter or refresh</div>`;
@@ -571,8 +482,10 @@ function renderFeed() {
     const w = WALLETS.find(x => x.name === t._wallet);
     const row = document.createElement('div');
     row.className = 'trade-row';
+    const badgeClass = t.side==='BUY' ? (t.outcome==='Yes'?'buy-yes':'buy-no') : (t.outcome==='Yes'?'sell-yes':'sell-no');
+    const badgeText = (t.side==='BUY'?'B':'S')+' '+(t.outcome==='Yes'?'Y':'N');
     row.innerHTML = `
-      <div class="trade-side ${t.side==='BUY'?'buy':'sell'}">${t.side==='BUY'?'B':'S'} ${t.outcome==='Yes'?'Y':'N'}</div>
+      <div class="trade-side ${badgeClass}">${badgeText}</div>
       <div class="trade-time">${fmt(t.timestamp)}</div>
       <div class="trade-market">${t.title||'—'}</div>
       <div class="trade-outcome ${t.outcome==='Yes'?'yes':'no'}">${t.outcome||'—'}</div>
@@ -587,9 +500,9 @@ function renderFeed() {
     wrap.appendChild(row);
   });
 }
- 
- 
- 
+
+
+
 function openModal(t) {
   document.getElementById('modalTitle').textContent = t.title || '—';
   document.getElementById('modalBody').innerHTML = `
@@ -606,30 +519,30 @@ function openModal(t) {
   link.href = t.slug ? `https://polymarket.com/event/${t.slug}` : '#';
   document.getElementById('modalOverlay').classList.add('open');
 }
- 
+
 function closeModal(e) {
   if (!e || e.target === document.getElementById('modalOverlay') || e.currentTarget?.classList?.contains('modal-close')) {
     document.getElementById('modalOverlay').classList.remove('open');
   }
 }
- 
+
 async function loadAll() {
   const btn = document.getElementById('refreshBtn');
   const dot = document.getElementById('statusDot');
   const statusTxt = document.getElementById('statusText');
   const errBar = document.getElementById('errorBar');
- 
+
   btn.disabled = true;
   btn.textContent = '…';
   dot.className = 'status-dot';
   statusTxt.textContent = 'loading';
   errBar.classList.remove('show');
- 
+
   allTrades = [];
   walletStats = {};
   let anyData = false;
   let errors = [];
- 
+
   await Promise.all(WALLETS.map(async w => {
     try {
       const data = await fetchActivity(w.address);
@@ -649,10 +562,10 @@ async function loadAll() {
       errors.push(w.name + ': ' + e.message);
     }
   }));
- 
+
   // Sort by time desc
   allTrades.sort((a,b) => b.timestamp - a.timestamp);
- 
+
   if (!anyData) {
     errBar.textContent = 'No data returned — API may be temporarily down. Retrying next refresh.';
     errBar.classList.add('show');
@@ -667,21 +580,21 @@ async function loadAll() {
     dot.className = 'status-dot';
     statusTxt.textContent = 'live';
   }
- 
+
   const now = new Date();
   document.getElementById('lastUpdate').textContent =
     now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
- 
+
   buildWalletPills();
   renderFeed();
- 
+
   btn.disabled = false;
   btn.textContent = '↻ refresh';
 }
- 
+
 // Auto-refresh every 90s
 setInterval(loadAll, 90000);
 loadAll();
 </script>
 </body>
-</h
+</html>
