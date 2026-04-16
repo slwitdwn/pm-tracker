@@ -503,17 +503,69 @@ function renderFeed() {
 
 
 
+function calcPnl(t) {
+  // Find prior BUY trades from same wallet for same asset (token)
+  if (!t.asset || !t._wallet) return null;
+  const buys = allTrades.filter(b =>
+    b._wallet === t._wallet &&
+    b.asset === t.asset &&
+    b.side === 'BUY' &&
+    b.timestamp < t.timestamp
+  );
+  if (!buys.length) return null;
+  const totalShares = buys.reduce((s,b) => s + (b.size||0), 0);
+  const totalUsdc   = buys.reduce((s,b) => s + (b.usdcSize||0), 0);
+  if (!totalShares) return null;
+  const avgBuy = totalUsdc / totalShares;
+  const sellShares = t.size || 0;
+  const pnl = (t.price - avgBuy) * sellShares;
+  return { pnl, avgBuy, sellShares };
+}
+
 function openModal(t) {
   document.getElementById('modalTitle').textContent = t.title || '—';
+
+  const side    = t.side    || '—';
+  const outcome = t.outcome || '—';
+  const isSell  = t.side === 'SELL';
+  const sideColor = side === 'BUY' ? 'green' : side === 'SELL' ? 'red' : '';
+  const outcomeColor = outcome === 'Yes' ? 'green' : outcome === 'No' ? 'red' : '';
+
+  let pnlRow = '';
+  if (isSell) {
+    const result = calcPnl(t);
+    if (result !== null) {
+      const { pnl, avgBuy } = result;
+      const sign   = pnl >= 0 ? '+' : '';
+      const cls    = pnl >= 0 ? 'green' : 'red';
+      const label  = pnl >= 0 ? '✓ Profit' : '✗ Loss';
+      pnlRow = `
+        <div class="modal-row" style="border-top:1px solid var(--border2);margin-top:6px;padding-top:12px">
+          <span class="modal-key">Est. P&L</span>
+          <span class="modal-val ${cls}" style="font-size:15px;font-weight:700">${label} ${sign}$${Math.abs(pnl).toFixed(2)}</span>
+        </div>
+        <div class="modal-row">
+          <span class="modal-key">Avg Buy Price</span>
+          <span class="modal-val">${(avgBuy*100).toFixed(1)}¢</span>
+        </div>
+        <div class="modal-row">
+          <span class="modal-key">Sell Price</span>
+          <span class="modal-val">${(t.price*100).toFixed(1)}¢</span>
+        </div>`;
+    } else {
+      pnlRow = `<div class="modal-row"><span class="modal-key">Est. P&L</span><span class="modal-val" style="color:var(--text3)">No matching buys in feed</span></div>`;
+    }
+  }
+
   document.getElementById('modalBody').innerHTML = `
     <div class="modal-row"><span class="modal-key">Wallet</span><span class="modal-val">${t._wallet}</span></div>
-    <div class="modal-row"><span class="modal-key">Side</span><span class="modal-val ${t.side==='BUY'?'green':'red'}">${t.side}</span></div>
-    <div class="modal-row"><span class="modal-key">Outcome</span><span class="modal-val ${t.outcome==='Yes'?'green':'red'}">${t.outcome||'—'}</span></div>
-    <div class="modal-row"><span class="modal-key">Price</span><span class="modal-val">${(t.price*100).toFixed(1)}¢</span></div>
+    <div class="modal-row"><span class="modal-key">Side</span><span class="modal-val ${sideColor}">${side}</span></div>
+    <div class="modal-row"><span class="modal-key">Outcome</span><span class="modal-val ${outcomeColor}">${outcome}</span></div>
     <div class="modal-row"><span class="modal-key">Size (USDC)</span><span class="modal-val yellow">$${t.usdcSize?.toFixed(2)||'—'}</span></div>
     <div class="modal-row"><span class="modal-key">Shares</span><span class="modal-val">${t.size?.toFixed(0)||'—'}</span></div>
     <div class="modal-row"><span class="modal-key">Time</span><span class="modal-val">${fmtDate(t.timestamp)}</span></div>
     <div class="modal-row"><span class="modal-key">TX</span><span class="modal-val" style="font-size:10px">${(t.transactionHash||'').slice(0,18)}…</span></div>
+    ${pnlRow}
   `;
   const link = document.getElementById('modalLink');
   link.href = t.slug ? `https://polymarket.com/event/${t.slug}` : '#';
